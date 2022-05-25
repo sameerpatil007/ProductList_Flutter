@@ -1,5 +1,6 @@
 import 'package:assignment_1/src/domain/entities/product.dart';
 import 'package:assignment_1/src/presentation/bloc/products_bloc.dart';
+import 'package:assignment_1/src/presentation/widgets/no_item.dart';
 import 'package:assignment_1/src/presentation/widgets/product_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,22 +43,35 @@ class _MyHomePageState extends State<MyHomePage> {
         listener: (BuildContext context, ProductsState state) {
           _onQuantityUpdate(message: state.quantityUpdateMessage);
         },
-        child: Column(
-          children: <Widget>[
-            _buildSearchBar(),
-            Expanded(child: _buildProductList()),
-          ],
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: Column(
+            children: <Widget>[
+              _buildSearchBar(),
+              Expanded(child: _buildProductList()),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildSearchBar() {
-    return TextFormField(
-      onChanged: (String searchText) => context.read<ProductsBloc>().add(GetSearchedProducts(searchTerm: searchText)),
-      decoration: const InputDecoration(
-        border: UnderlineInputBorder(),
-        labelText: 'Search',
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: TextFormField(
+        onChanged: (String searchText) => context.read<ProductsBloc>().add(GetSearchedProducts(searchTerm: searchText)),
+        decoration: const InputDecoration(
+          prefixIcon: Icon(Icons.search),
+          fillColor: Colors.white,
+          filled: true,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(40.0)),
+          ),
+          hintText: 'Search',
+        ),
       ),
     );
   }
@@ -67,13 +81,16 @@ class _MyHomePageState extends State<MyHomePage> {
       buildWhen: (ProductsState previous, ProductsState current) =>
           previous.searchedProducts != current.searchedProducts,
       builder: (BuildContext context, ProductsState state) {
-        return ListView.builder(
-          itemCount: state.searchedProducts.length,
-          itemBuilder: (BuildContext context, int index) {
-            Product productToDisplay = state.searchedProducts[index];
-            return BuildListItem(product: productToDisplay);
-          },
-        );
+        if (state.searchedProducts.isNotEmpty) {
+          return ListView.builder(
+            itemCount: state.searchedProducts.length,
+            itemBuilder: (BuildContext context, int index) {
+              Product productToDisplay = state.searchedProducts[index];
+              return BuildListItem(product: productToDisplay);
+            },
+          );
+        }
+        return const NoItemFound();
       },
     );
   }

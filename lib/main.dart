@@ -19,15 +19,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (BuildContext context) => ProductsBloc(GetProductsUseCase(_productsRepository), UpdateProductsUseCase(_productsRepository)),
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch(
           primarySwatch: Colors.green,
         ),
-        home: const MyHomePage(title: kMaterialAppTitle),
+        scaffoldBackgroundColor: Colors.grey.shade50,
       ),
-    ) ;
+      home: BlocProvider(
+        create: (BuildContext context) => ProductsBloc(
+          GetProductsUseCase(_productsRepository),
+          UpdateProductsUseCase(_productsRepository),
+        ),
+        child: const MyHomePage(title: kMaterialAppTitle),
+      ),
+    );
   }
 }
