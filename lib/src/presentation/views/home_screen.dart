@@ -36,6 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        bottom: _buildSearchBar(),
       ),
       body: BlocListener<ProductsBloc, ProductsState>(
         listenWhen: (ProductsState previous, ProductsState current) =>
@@ -47,31 +48,37 @@ class _MyHomePageState extends State<MyHomePage> {
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
           },
-          child: Column(
-            children: <Widget>[
-              _buildSearchBar(),
-              Expanded(child: _buildProductList()),
-            ],
-          ),
+          child: _buildProductList(),
         ),
       ),
     );
   }
 
-  Widget _buildSearchBar() {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: TextFormField(
-        onChanged: (String searchText) => context.read<ProductsBloc>().add(GetSearchedProducts(searchTerm: searchText)),
-        decoration: const InputDecoration(
-          prefixIcon: Icon(Icons.search),
-          fillColor: Colors.white,
-          filled: true,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(40.0)),
+  PreferredSize _buildSearchBar() {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(70.0),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: _buildSearchInput(),
+      ),
+    );
+  }
+
+  Widget _buildSearchInput() {
+    return TextFormField(
+      onChanged: (String searchText) => context.read<ProductsBloc>().add(GetSearchedProducts(searchTerm: searchText)),
+      decoration: const InputDecoration(
+        prefixIcon: Icon(Icons.search),
+        fillColor: Colors.white,
+        filled: true,
+        contentPadding: EdgeInsets.zero,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(40.0)),
+          borderSide: BorderSide(
+            color: Colors.transparent,
           ),
-          hintText: 'Search',
         ),
+        hintText: 'Search',
       ),
     );
   }
@@ -83,6 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (BuildContext context, ProductsState state) {
         if (state.searchedProducts.isNotEmpty) {
           return ListView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 14.0),
             itemCount: state.searchedProducts.length,
             itemBuilder: (BuildContext context, int index) {
               Product productToDisplay = state.searchedProducts[index];

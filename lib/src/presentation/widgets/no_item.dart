@@ -5,17 +5,19 @@ class NoItemFound extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(height: 18.0,),
-        Icon(
-          Icons.no_food,
-          size: 62,
-          color: Colors.green.shade400,
-        ),
-        const SizedBox(height: 18.0,),
-        const Text('No products found')
-      ],
+    return Center(
+      child: Column(
+        children: <Widget>[
+          const SizedBox(height: 24.0,),
+          Icon(
+            Icons.no_food,
+            size: 62,
+            color: Colors.green.shade400,
+          ),
+          const SizedBox(height: 18.0,),
+          Text('No products found',style: Theme.of(context).textTheme.titleLarge,)
+        ],
+      ),
     );
   }
 }
